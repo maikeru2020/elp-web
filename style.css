@@ -36,6 +36,7 @@
         border-radius: 1rem;
         padding: 1rem 2rem;
         margin: 0 0 2rem 2%;
+        margin-top: 1rem;
     }
     
   }
@@ -78,6 +79,7 @@
         border-radius: 1rem;
         padding: 1rem 2rem;
         margin: 0 0 2rem 2%;
+        padding-top: 1rem;
     }
   }
   
@@ -113,6 +115,17 @@
         max-width: 20rem;
         background-color: rgba(0, 0, 0, .1);
     }
+    form button{
+        border: none;
+        background-color: #9c2c13;
+        color: white;
+        border-radius: 1rem;
+        padding: 1rem 2rem;
+        margin: 0 0 2rem 2%;
+        margin-top: 1rem;
+    }
+    
+
   } 
   
   /* Large devices (laptops/desktops, 992px and up) */
@@ -145,6 +158,17 @@
         max-width: 20rem;
         background-color: rgba(0, 0, 0, .1);
     }
+    form button{
+        border: none;
+        background-color: #9c2c13;
+        color: white;
+        border-radius: 1rem;
+        padding: 1rem 2rem;
+        margin: 0 0 2rem 2%;
+        margin-top: 1rem;
+    }
+    
+
   } 
   
   /* Extra large devices (large laptops and desktops, 1200px and up) */

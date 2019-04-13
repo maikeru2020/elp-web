@@ -23,8 +23,23 @@
             <label class="admin"> <input type="tel" name="phone" placeholder="000000000000"> </label>
             <label class="admin"><input type="password" name="password" placeholder="Password" required></label>
             <label class="admin"><input type="email" name="email" placeholder="email@gmail.com"></label>
-            <button class="addTeach">Add Teacher</button>
-            <button class="addTeach">Create Admin</button>
+           
+            <select id="selectTitle">
+                <option value="Select">Select</option>
+                <option value="Admin">Administrator</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Parent">Parent</option>
+            </select>
+            <fieldset>
+                <legend>Student List</legend>
+               <label><input type="search" placeholder="Student Name" id="searchStudent"></label>
+            
+                <button id="searchBtn" onclick="searchButton()">Search</button>
+                <div id="searcResult">
+                    The result goes here
+                </div>
+            </fieldset>
+            <button >Create Account</button>
         </fieldset>
     </form>
 </body>
