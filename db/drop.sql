@@ -1,0 +1,10 @@
+DROP TABLE lesson_plans;
+DROP TABLE subjects;
+DROP TABLE teachers_classrooms;
+DROP TABLE students_classrooms;
+DROP TABLE classrooms;
+DROP TABLE terms;
+DROP TABLE students;
+DROP TABLE users;
+DROP TABLE account_types;
+DROP TABLE schools;
