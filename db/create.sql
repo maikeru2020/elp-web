@@ -25,7 +25,7 @@ CREATE TABLE users (
 CREATE TABLE students (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(255),
-    last_name VARCHAR(255),
+    last_name VARCHAR(255)
 );
 
 CREATE TABLE terms (
@@ -37,7 +37,8 @@ CREATE TABLE terms (
 CREATE TABLE classrooms (
     id SERIAL PRIMARY KEY,
     classroom_name VARCHAR(255),
-    term_id INT REFERENCES terms
+    term_id INT REFERENCES terms,
+    school_id INT REFERENCES schools
 );
 
 CREATE TABLE students_classrooms (
@@ -50,12 +51,15 @@ CREATE TABLE teachers_classrooms (
     classroom_id INT REFERENCES classrooms 
 );
 
+CREATE TABLE subjects (
+    id SERIAL PRIMARY KEY,
+    subject_name VARCHAR(255)
+);
+
 CREATE TABLE lesson_plans (
     id SERIAL PRIMARY KEY,
     week_number INT,
     week_ending DATE,
-    due_date DATE,
-    subject VARCHAR(255),
     reference VARCHAR(255),
     day_duration TEXT,
     topic VARCHAR(255),
@@ -65,5 +69,6 @@ CREATE TABLE lesson_plans (
     core_points TEXT,
     evaluation TEXT,
     
+    subject_id INT REFERENCES subjects,
     classroom_id INT REFERENCES classrooms
 );
