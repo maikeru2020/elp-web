@@ -1,0 +1,133 @@
+/* Screen Sizes */
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) { 
+    form fieldset{
+        margin: 2rem 0;
+        border: 1px solid red;
+        border-radius: 10px;
+        padding: 0 2rem;
+    }
+    form legend{
+        color: blue;
+        margin: 0 .5rem;
+        padding: 0 .5rem;
+    }
+    form label.admin{
+        display: block;
+        padding-top: 1rem;
+        color: red;
+        font-size: .8rem;
+    }
+    form label.admin input{
+        display: block;
+        font-size: 1rem;
+        border: solid 1px #999;
+        border-radius: 4px;
+        padding: .75rem;
+        color: #555;
+        width: 100%;
+        max-width: 20rem;
+        background-color: rgba(0, 0, 0, .1);
+    }
+    form button{
+        border: none;
+        background-color: #9c2c13;
+        color: white;
+        border-radius: 1rem;
+        padding: 1rem 2rem;
+        margin: 0 0 2rem 2%;
+    }
+    
+  }
+  
+  /* Small devices (portrait tablets and large phones, 600px and up) */
+  @media only screen and (min-width: 600px) {
+     form fieldset{
+        margin: 2rem 0;
+        border: 1px solid red;
+        border-radius: 10px;
+        padding: 0 2rem;
+    }
+    form legend{
+        color: blue;
+        margin: 0 .5rem;
+        padding: 0 .5rem;
+    }
+    form label.admin{
+        display: block;
+        padding-top: 1rem;
+        color: red;
+        font-size: .8rem;
+    }
+    form label.admin input{
+        display: block;
+        font-size: 1rem;
+        border: solid 1px #999;
+        border-radius: 4px;
+        padding: .75rem;
+        color: #555;
+        width: 100%;
+        max-width: 20rem;
+        background-color: rgba(0, 0, 0, .1);
+    }
+
+    form button{
+        border: none;
+        background-color: #9c2c13;
+        color: white;
+        border-radius: 1rem;
+        padding: 1rem 2rem;
+        margin: 0 0 2rem 2%;
+    }
+  }
+  
+  /* Medium devices (landscape tablets, 768px and up) */
+  @media only screen and (min-width: 768px) {
+    /* .admin {background: blue;} */
+    body{
+        margin: 0;
+        padding: 0;
+        -webkit-background-size: cover;
+        background-size: cover;
+        background-color: rgba(0, 0, 0, .5);
+    }
+    fieldset{
+        background-color: rgba(255, 255, 255, .5);
+        width: 900px;
+        height: 600px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-40%, -45%);
+        border-radius: 20px
+    }
+    
+  } 
+  
+  /* Large devices (laptops/desktops, 992px and up) */
+  @media only screen and (min-width: 992px) {
+    /* .admin {background: orange;} */
+    body{
+    margin: 0;
+    padding: 0;
+    -webkit-background-size: cover;
+    background-size: cover;
+    background-color: rgba(0, 0, 0, .5);
+}
+fieldset{
+    background-color: rgba(255, 255, 255, .5);
+    width: 900px;
+    height: 600px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -45%);
+    border-radius: 20px
+}
+
+  } 
+  
+  /* Extra large devices (large laptops and desktops, 1200px and up) */
+  @media only screen and (min-width: 1200px) {
+    /* .admin {background: pink;} */
+  }
