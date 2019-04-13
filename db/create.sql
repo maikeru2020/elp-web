@@ -58,7 +58,7 @@ CREATE TABLE subjects (
 
 CREATE TABLE lesson_plans (
     id SERIAL PRIMARY KEY,
-    week_number INT,
+    week INT,
     week_ending DATE,
     reference VARCHAR(255),
     day_duration TEXT,
