@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 8000;
 
@@ -8,11 +9,13 @@ const dbUrl = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhos
 const pool = new Pool({connectionString: dbUrl});
 
 app.use(express.static('public'));
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+app.set('view engine', 'ejs');
+
 app.get('/', function(req, res) {
-    res.send('<h1>Hello World</h1>');
+    res.redirect('login.html');
 });
 
 app.get('/getLessonPlan', function(req, res) {
@@ -31,6 +34,7 @@ app.get('/getLessonPlan', function(req, res) {
 
 app.post('/insertPlan', function(req, res) {
     var classroomId = 1;
+    var subjectId = Number(req.body.subjectId)
     var week = Number(req.body.week);
     var dueDate = req.body.dueDate;
     var weekEnding = req.body.weekEnding;
@@ -43,8 +47,93 @@ app.post('/insertPlan', function(req, res) {
     var corePoints = req.body.corePoints;
     var evaluation = req.body.evaluation;
 
-    var sql = 'INSERT INTO lesson_plans (classroom_id, week, due_date, week_ending, reference, day_duration, topic, objectives, activities, materials, core_points, evaluation) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)'
-    pool.query(sql)
+    var values = [classroomId, subjectId, week, dueDate, weekEnding, reference, dayDuration, topic, objectives, activities, materials, corePoints, evaluation];
+    var sql = 'INSERT INTO lesson_plans (classroom_id, subject_id, week, due_date, week_ending, reference, day_duration, topic, objectives, activities, materials, core_points, evaluation) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)'
+    pool.query(sql, values, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send
+        }
+    });
+});
+
+app.get('/parents', function(req, res) {
+
+});
+
+app.post('/signIn', function(req, res) {
+    var username = req.body.username;
+    var password = req.body.password;
+
+    var values = [username];
+    var sql = 'SELECT * FROM users WHERE username=$1';
+    pool.query(sql, values, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            if (result.rows.length > 0) {
+                var passwordHash = result.rows[0].password_hash;
+                bcrypt.compare(password, passwordHash, function(err, match) {
+                    if (err) {
+                        console.log(err);
+                    } else if (match) {
+
+                        // redirect based on account type
+                        var accountType = result.rows[0].account_type;
+                        switch (accountType) {
+                            case 'parent':
+                                break;
+                            case 'teacher':
+                                break;
+                            case 'admin':
+                                res.send({redirect: "admin.html"});
+                        }
+                    } else {
+                        res.send({message: "Invalid Password"});
+                    }
+                });
+            } else {
+                res.send({message: "Invalid Username"});
+            }
+        }
+    });
+    
+});
+
+app.get('/getStudent', function(req, res) {
+    var testMarks = {classTest1: 29, groupExercise: 10, classTest2: 30, projectHomework: 19, exam: 95}
+    res.render('students', testMarks);
+});
+
+app.post('/createAccount', function(req, res) {
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var username = req.body.username;
+    var phone = req.body.phone;
+    var password = req.body.password;
+    var email = req.body.email;
+    var accountType = req.body.accountType;
+
+    // * change later to session *
+    var schoolId = 1;
+
+    bcrypt.hash(password, 10, function(err, passwordHash) {
+        if (err) {
+            console.log(err);
+        } else {
+            var values = [firstName, lastName, username, phone, passwordHash, email, accountType, schoolId];
+            var sql = 'INSERT INTO users (first_name, last_name, username, phone, password_hash, email, account_type, school_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+            pool.query(sql, values, function(err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send({success: true});
+                }
+            });
+        }
+    });
+    
 });
 
 app.listen(port, (req, res) => { console.log('Server on port ' + port); });
