@@ -4,21 +4,15 @@ CREATE TABLE schools (
     school_number VARCHAR(255)
 );
 
-CREATE TABLE account_types (
-    id SERIAL PRIMARY KEY,
-    account_type VARCHAR(255)
-);
-
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
-    title VARCHAR(255),
     username VARCHAR(255),
     password_hash VARCHAR(255),
     email VARCHAR(255),
     phone VARCHAR(255),
-    account_type INT REFERENCES account_types,
+    account_type VARCHAR(255),
     school_id INT REFERENCES schools
 );
 
@@ -59,6 +53,7 @@ CREATE TABLE subjects (
 CREATE TABLE lesson_plans (
     id SERIAL PRIMARY KEY,
     week INT,
+    due_date DATE,
     week_ending DATE,
     reference VARCHAR(255),
     day_duration TEXT,

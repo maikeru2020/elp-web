@@ -6,5 +6,4 @@ DROP TABLE classrooms;
 DROP TABLE terms;
 DROP TABLE students;
 DROP TABLE users;
-DROP TABLE account_types;
 DROP TABLE schools;

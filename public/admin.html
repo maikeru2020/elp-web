@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>eLessonPlan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="small.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="admin.js"></script>
+</head>
+
+<body>
+    <!-- <form> -->
+        <!-- <img src="img.png" alt=""> -->
+        <!-- <img src="index.jpg" alt=""> -->
+        <div id="message"></div>
+        <fieldset>
+            <legend class="admin">Administrator</legend>
+            <label class="admin"> <input type="text" name="fname" id="firstName" placeholder="First Name" required></label>
+            <label class="admin"><input type="text" name="lname" id="lastName" placeholder="Last Name" required></label>
+            <label class="admin"><input type="text" name="username" id="username" placeholder="User Name" required></label>
+            <label class="admin"> <input type="tel" name="phone" id="phone" placeholder="000000000000"> </label>
+            <label class="admin"><input type="password" name="password" id="password" placeholder="Password" required></label>
+            <label class="admin"><input type="email" name="email" id="email" placeholder="email@gmail.com"></label>
+           
+            <select id="selectTitle">
+                <option value="">Select</option>
+                <option value="admin">Administrator</option>
+                <option value="teacher">Teacher</option>
+                <option value="parent">Parent</option>
+            </select>
+            <fieldset>
+                <legend>Student List</legend>
+               <label><input type="search" placeholder="Student Name" id="searchStudent"></label>
+            
+                <button id="searchBtn" onclick="searchButton()">Search</button>
+                <div id="searcResult">
+                    The result goes here
+                </div>
+            </fieldset>
+            <button onclick="createAccount();">Create Account</button>
+        </fieldset>
+    <!-- </form> -->
+</body>
+
+</html>
