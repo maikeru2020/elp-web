@@ -1,5 +1,5 @@
 INSERT INTO subjects (subject_name)
-VALUES ('Math', 'Science', 'English');
+VALUES ('Math'), ('Science'), ('English');
 
 INSERT INTO terms (academic_year, term_number)
 VALUES ('2019/2020', '1'), ('2019/2020', '2'), ('2019/2020', '3');

@@ -1,0 +1,60 @@
+<!--Test page for inserting lesson plans-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="insert.js"></script>
+    <title>Insert Lesson Plan</title>
+</head>
+<body>
+    <h1>Insert Lesson Plan</h1>
+    
+    <select id="week">
+        <option value="1">Week 1</option>
+        <option value="2">Week 2</option>
+        <option value="3">Week 3</option>
+        <option value="4">Week 4</option>
+        <option value="5">Week 5</option>
+        <option value="6">Week 6</option>
+        <option value="7">Week 7</option>
+        <option value="8">Week 8</option>
+        <option value="9">Week 9</option>
+        <option value="10">Week 10</option>
+        <option value="11">Week 11</option>
+        <option value="12">Week 12</option>
+        <option value="13">Week 13</option>
+        <option value="14">Week 14</option>
+    </select><br>
+    Due Date<br>
+    <input type="date" id="dueDate"><br>
+    Week Ending<br>
+    <input type="date" id="weekEnding"><br>
+    Subject<br>
+    <select id="subjectId">
+        <option value="1">Math</option>
+        <option value="2">Science</option>
+        <option value="3">English</option>
+    </select><br>
+    Reference<br>
+    <textarea rows="4" col="50" id="reference"></textarea><br>
+    Day / Duration<br>
+    <textarea rows="4" col="50" id="dayDuration"></textarea><br>
+    Topic / Sub-Topic / Aspect<br>
+    <textarea rows="4" col="50" id="topic"></textarea><br>
+    Objectives / R.P.K.<br>
+    <textarea rows="4" col="50" id="objectives"></textarea><br>
+    Teacher-Learner Activities<br>
+    <textarea rows="4" col="50" id="activities"></textarea><br>
+    Teaching Learning Materials<br>
+    <textarea rows="4" col="50" id="materials"></textarea><br>
+    Core Points<br>
+    <textarea rows="4" col="50" id="corePoints"></textarea><br>
+    Evaluation and Remarks<br>
+    <textarea rows="4" col="50" id="evaluation"></textarea><br>
+    <button onclick="insertPlan();">Insert Plan</button>
+
+</body>
+</html>

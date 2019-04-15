@@ -20,7 +20,7 @@ app.get('/', function(req, res) {
 
 app.get('/getLessonPlan', function(req, res) {
     var week = req.query.week;
-    var classroomId = req.session.classroomId;
+    var classroomId = 1 // req.session.classroomId;
     var values = [classroomId, week];
     var sql = 'SELECT * FROM lesson_plans WHERE classroom_id=$1 AND week=$2';
     pool.query(sql, values, function(err, result) {
@@ -34,7 +34,7 @@ app.get('/getLessonPlan', function(req, res) {
 
 app.post('/insertPlan', function(req, res) {
     var classroomId = 1;
-    var subjectId = Number(req.body.subjectId)
+    var subjectId = Number(req.body.subjectId);
     var week = Number(req.body.week);
     var dueDate = req.body.dueDate;
     var weekEnding = req.body.weekEnding;
@@ -53,7 +53,7 @@ app.post('/insertPlan', function(req, res) {
         if (err) {
             console.log(err);
         } else {
-            res.send
+            res.send({success: true});
         }
     });
 });
@@ -85,6 +85,7 @@ app.post('/signIn', function(req, res) {
                             case 'parent':
                                 break;
                             case 'teacher':
+                                res.send({redirect: "teacher.html"})
                                 break;
                             case 'admin':
                                 res.send({redirect: "admin.html"});
