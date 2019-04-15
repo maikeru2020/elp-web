@@ -6,12 +6,24 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
     <title>eLessonPlan</title>
+    <link rel="stylesheet" href="/public/responav/resnavsmall.css">
+    <link rel="stylesheet" href="/public/responav/resnavmedium.css">
+    <link rel="stylesheet" href="/public/responav/resnavlarge.css">
+    <link rel="stylesheet" href="/public/responav/resnav.js">
 </head>
 <body>
     <header>
-        <nav>
-            Navigation barre
-        </nav>
+        <nav class="clearfix">
+            <button onclick="menu();">&#9776;</button>
+            <ul id="primaryNav" class="hide">
+                <li><a href="/headmaster.html">Home</a></li>
+                <li><a href="teacher_login.html">Sign up</a></li>
+                <li><a href="/students.html">Parents</a></li>
+                <li class="active"><a href="/lessonplans.html">Teachers</a></li>
+                <li><a href="/headmaster.html">Admin</a></li>
+            </ul>
+          </nav>
+        </div>
     </header>
     <form>
     <fieldset>
