@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
 const app = express();
 const port = process.env.PORT || 8000;
 
@@ -11,11 +12,16 @@ const pool = new Pool({connectionString: dbUrl});
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(session({
+    secret: 'freddy is awesome',
+    resave: false,
+    saveUninitialized: true
+}));
 
 app.set('view engine', 'ejs');
 
 app.get('/', function(req, res) {
-    res.redirect('login.html');
+    res.redirect('login');
 });
 
 app.get('/getLessonPlan', function(req, res) {
@@ -78,18 +84,13 @@ app.post('/signIn', function(req, res) {
                     if (err) {
                         console.log(err);
                     } else if (match) {
-
-                        // redirect based on account type
                         var accountType = result.rows[0].account_type;
-                        switch (accountType) {
-                            case 'parent':
-                                break;
-                            case 'teacher':
-                                res.send({redirect: "teacher.html"})
-                                break;
-                            case 'admin':
-                                res.send({redirect: "admin.html"});
-                        }
+                        var schoolId = result.rows[0].school_id;
+                        req.session.schoolId = schoolId;
+                        req.session.accountType = accountType;
+
+                        // redirect to route based on account type
+                        res.send({redirect: accountType});
                     } else {
                         res.send({message: "Invalid Password"});
                     }
@@ -116,8 +117,8 @@ app.post('/createAccount', function(req, res) {
     var email = req.body.email;
     var accountType = req.body.accountType;
 
-    // * change later to session *
-    var schoolId = 1;
+    // school based on admin session school ID
+    var schoolId = Number(req.session.schoolId);
 
     bcrypt.hash(password, 10, function(err, passwordHash) {
         if (err) {
@@ -135,6 +136,35 @@ app.post('/createAccount', function(req, res) {
         }
     });
     
+});
+
+app.get('/login', function(req, res) {
+    res.render('login');
+});
+
+app.get('/teacher', function(req, res) {
+    if (req.session.accountType == 'teacher') {
+        res.render('teacher');
+    } else {
+        res.redirect('login');
+    }
+
+});
+
+app.get('/parent', function(req, res) {
+    if (req.session.accountType == 'parent') {
+        res.render('parent');
+    } else {
+        res.redirect('login');
+    }
+});
+
+app.get('/admin', function(req, res) {
+    if (req.session.accountType == 'admin') {
+        res.render('admin');
+    } else {
+        res.redirect('login');
+    }
 });
 
 app.listen(port, (req, res) => { console.log('Server on port ' + port); });
