@@ -52,9 +52,11 @@ app.post('/insertPlan', function(req, res) {
     var materials = req.body.materials;
     var corePoints = req.body.corePoints;
     var evaluation = req.body.evaluation;
+    var isApproved = false;
+    var schoolId = req.session.schoolId;
 
-    var values = [classroomId, subjectId, week, dueDate, weekEnding, reference, dayDuration, topic, objectives, activities, materials, corePoints, evaluation];
-    var sql = 'INSERT INTO lesson_plans (classroom_id, subject_id, week, due_date, week_ending, reference, day_duration, topic, objectives, activities, materials, core_points, evaluation) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)'
+    var values = [classroomId, subjectId, week, dueDate, weekEnding, reference, dayDuration, topic, objectives, activities, materials, corePoints, evaluation, isApproved, schoolId];
+    var sql = 'INSERT INTO lesson_plans (classroom_id, subject_id, week, due_date, week_ending, reference, day_duration, topic, objectives, activities, materials, core_points, evaluation, is_approved, school_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)'
     pool.query(sql, values, function(err) {
         if (err) {
             console.log(err);
@@ -103,6 +105,20 @@ app.post('/signIn', function(req, res) {
     
 });
 
+app.get('/getUnapprovedPlans', function(req, res) {
+    var schoolId = req.session.schoolId;
+    var values = [schoolId];
+    var sql = 'SELECT * FROM lesson_plans WHERE school_id=$1 AND is_approved=false';
+    pool.query(sql, values, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result.rows);
+        }
+    });
+
+})
+
 app.get('/getStudent', function(req, res) {
     var testMarks = {classTest1: 29, groupExercise: 10, classTest2: 30, projectHomework: 19, exam: 95}
     res.render('students', testMarks);
@@ -118,7 +134,8 @@ app.post('/createAccount', function(req, res) {
     var accountType = req.body.accountType;
 
     // school based on admin session school ID
-    var schoolId = Number(req.session.schoolId);
+    var schoolId = 1;
+    //var schoolId = Number(req.session.schoolId);
 
     bcrypt.hash(password, 10, function(err, passwordHash) {
         if (err) {
@@ -160,11 +177,29 @@ app.get('/parent', function(req, res) {
 });
 
 app.get('/admin', function(req, res) {
-    if (req.session.accountType == 'admin') {
-        res.render('admin');
+    res.render('admin');
+    // if (req.session.accountType == 'admin') {
+    //     res.render('admin');
+    // } else {
+    //     res.redirect('login');
+    // }
+});
+
+app.get('/headmaster', function(req, res) {
+    if (req.session.accountType == 'headmaster') {
+        var schoolId = req.session.schoolId;
+        var values = [schoolId];
+        var sql = 'SELECT lp.id, lp.week, s.subject_name FROM lesson_plans lp JOIN subjects s ON s.id=lp.subject_id WHERE school_id=$1 AND is_approved=false';
+        pool.query(sql, values, function(err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render('headmaster', {lessonPlans: result.rows});
+            }
+        });
     } else {
         res.redirect('login');
     }
-});
+})
 
 app.listen(port, (req, res) => { console.log('Server on port ' + port); });

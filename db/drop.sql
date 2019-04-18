@@ -1,3 +1,5 @@
+DROP TABLE submissions;
+DROP TABLE comments;
 DROP TABLE lesson_plans;
 DROP TABLE subjects;
 DROP TABLE teachers_classrooms;

@@ -63,7 +63,22 @@ CREATE TABLE lesson_plans (
     materials VARCHAR(255),
     core_points TEXT,
     evaluation TEXT,
+    is_approved BOOLEAN,
     
     subject_id INT REFERENCES subjects,
+    school_id INT REFERENCES schools,
     classroom_id INT REFERENCES classrooms
+);
+
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    comment TEXT,
+    lesson_plan_id INT REFERENCES lesson_plans,
+    is_read BOOLEAN
+);
+
+CREATE TABLE submissions (
+    id SERIAL PRIMARY KEY,
+    submission_date DATE,
+    lesson_plan_id INT REFERENCES lesson_plans
 );
