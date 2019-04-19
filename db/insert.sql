@@ -11,4 +11,4 @@ INSERT INTO users (first_name, last_name, username, email, phone, account_type, 
 VALUES ('Michael', 'Schmidt', 'mschmidt', 'maikeru2020@gmail.com', '509-529-3238', 'admin', 1);
 
 INSERT INTO classrooms (classroom_name, term_id, subject_id, teacher_id)
-VALUES ('Math I', 1, 1, 1);
+VALUES ('Math I', 1, 1, 1), ('Science', 1, 2, 1);

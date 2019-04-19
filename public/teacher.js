@@ -1,5 +1,5 @@
-function getContent(number) {
-    $.get("getPlan", {week: number}, function(result) {
+function getContent(week) {
+    $.get("getPlan", {week: week}, function(result) {
         var week = result.week;
         var dueDate = formatDate(result.due_date);
         var weekEnding = formatDate(result.week_ending);
@@ -12,8 +12,13 @@ function getContent(number) {
         var corePoints = result.core_points;
         var evaluation = result.evaluation;
         var planId = result.id;
+        if (result.is_approved) {
+            var approval = "Approved!";
+        } else {
+            var approval = "Not Approved";
+        }
 
-        var content = "<h1>Week " + week + "</h1>" +
+        var content = "<h1>Week " + week + " (" + approval + ")</h1>" +
                       "Due Date:<br>" +
                       "<input type='date' id='dueDate' value='" + dueDate + "'><br>" +
                       "Week Ending:<br>" +
@@ -37,7 +42,17 @@ function getContent(number) {
                       "<button onclick='savePlan("+ planId + ");'>Save</button>";
 
         $('.content').html(content);
+
     });
+
+    $.get('getComments', {week: week}, function(result) {
+        var comments = "";
+        for (let i = 0; i < result.length; i++) {
+            comments += '<div>(' + (i + 1) + ') ' + result[i].comment + '</div>';
+        }
+        $('#comments').html(comments);
+    });
+
 }
 
 function formatDate(date) {

@@ -65,6 +65,7 @@ CREATE TABLE lesson_plans (
     core_points TEXT,
     evaluation TEXT,
     is_approved BOOLEAN,
+    unread BOOLEAN,
     
     subject_id INT REFERENCES subjects,
     school_id INT REFERENCES schools,
@@ -74,8 +75,7 @@ CREATE TABLE lesson_plans (
 CREATE TABLE comments (
     id SERIAL PRIMARY KEY,
     comment TEXT,
-    lesson_plan_id INT REFERENCES lesson_plans,
-    is_read BOOLEAN
+    lesson_plan_id INT REFERENCES lesson_plans
 );
 
 CREATE TABLE submissions (

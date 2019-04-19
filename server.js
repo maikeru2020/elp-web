@@ -26,9 +26,22 @@ app.get('/', function(req, res) {
 
 app.get('/getPlan', function(req, res) {
     var week = req.query.week;
-    var classroomId = 1 // req.session.classroomId;
+    var classroomId = req.session.classroomId;
     var values = [classroomId, week];
     var sql = 'SELECT * FROM lesson_plans WHERE classroom_id=$1 AND week=$2';
+    pool.query(sql, values, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result.rows[0]);
+        }
+    });
+});
+
+app.get('/getPlanById', function(req, res) {
+    var planId = req.query.planId;
+    var values = [planId];
+    var sql = 'SELECT * FROM lesson_plans WHERE id=$1';
     pool.query(sql, values, function(err, result) {
         if (err) {
             console.log(err);
@@ -53,10 +66,11 @@ app.post('/insertPlan', function(req, res) {
     var corePoints = req.body.corePoints;
     var evaluation = req.body.evaluation;
     var isApproved = false;
-    var schoolId = req.session.schoolId;
+    var schoolId = 1  // req.session.schoolId;
+    var unread = false;
 
-    var values = [classroomId, subjectId, week, dueDate, weekEnding, reference, dayDuration, topic, objectives, activities, materials, corePoints, evaluation, isApproved, schoolId];
-    var sql = 'INSERT INTO lesson_plans (classroom_id, subject_id, week, due_date, week_ending, reference, day_duration, topic, objectives, activities, materials, core_points, evaluation, is_approved, school_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)'
+    var values = [classroomId, subjectId, week, dueDate, weekEnding, reference, dayDuration, topic, objectives, activities, materials, corePoints, evaluation, unread, isApproved, schoolId];
+    var sql = 'INSERT INTO lesson_plans (classroom_id, subject_id, week, due_date, week_ending, reference, day_duration, topic, objectives, activities, materials, core_points, evaluation, is_approved, unread, school_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)'
     pool.query(sql, values, function(err) {
         if (err) {
             console.log(err);
@@ -150,7 +164,7 @@ app.post('/updatePlan', function(req, res) {
     var evaluation = req.body.evaluation;
 
     var values = [weekEnding, reference, dayDuration, topic, objectives, activities, materials, corePoints, evaluation, planId];
-    var sql = 'UPDATE lesson_plans SET week_ending=$1, reference=$2, day_duration=$3, topic=$4, objectives=$5, activities=$6, materials=$7, core_points=$8, evaluation=$9, is_approved=false WHERE id=$10';
+    var sql = 'UPDATE lesson_plans SET week_ending=$1, reference=$2, day_duration=$3, topic=$4, objectives=$5, activities=$6, materials=$7, core_points=$8, evaluation=$9, is_approved=false, unread=true WHERE id=$10';
     pool.query(sql, values, function(err) {
         if (err) {
             console.log(err);
@@ -172,7 +186,56 @@ app.get('/getClassroom', function(req, res) {
             res.send({classroom: result.rows[0]});
         }
     });
-}); 
+});
+
+app.post('/approvePlan', function(req, res) {
+    var planId = req.body.planId;
+    var values = [planId];
+    var sql = 'UPDATE lesson_plans SET is_approved=true, unread=false WHERE id=$1';
+    pool.query(sql, values, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({success: true});
+        }
+    });
+});
+
+app.post('/insertComment', function(req, res) {
+    var planId = req.body.planId;
+    var comment = req.body.comment;
+    var values = [planId, comment];
+    var sql = 'INSERT INTO comments (lesson_plan_id, comment) VALUES ($1, $2)';
+    pool.query(sql, values, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            var values2 = [planId];
+            var sql2 = 'UPDATE lesson_plans SET unread=false WHERE id=$1';
+            pool.query(sql2, values2, function(err) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.send({success: true});
+                }
+            });
+        }
+    });
+});
+
+app.get('/getComments', function(req, res) {
+    var week = req.query.week;
+    var classroomId = req.session.classroomId;
+    var values = [week, classroomId];
+    var sql = 'SELECT c.comment FROM comments c JOIN lesson_plans lp ON lp.id=c.lesson_plan_id WHERE lp.week=$1 AND lp.classroom_id=$2';
+    pool.query(sql, values, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result.rows);
+        }
+    });
+});
 
 app.get('/login', function(req, res) {
     res.render('login');
@@ -187,7 +250,11 @@ app.get('/teacher', function(req, res) {
             if (err) {
                 console.log(err);
             } else {
-                res.render('teacher', {classrooms: result.rows});
+                var classrooms = result.rows;
+                if (!req.session.classroomId && classrooms.length > 0) {
+                    req.session.classroomId = classrooms[0].id;
+                }
+                res.render('teacher', {classrooms: classrooms});
             }
         });
 
@@ -218,7 +285,7 @@ app.get('/headmaster', function(req, res) {
     // if (req.session.accountType == 'headmaster') {
         var schoolId = 1 // req.session.schoolId;
         var values = [schoolId];
-        var sql = 'SELECT lp.id, lp.week, s.subject_name FROM lesson_plans lp JOIN subjects s ON s.id=lp.subject_id WHERE school_id=$1 AND is_approved=false';
+        var sql = 'SELECT lp.id, lp.week, s.subject_name FROM lesson_plans lp JOIN subjects s ON s.id=lp.subject_id WHERE school_id=$1 AND unread=true';
         pool.query(sql, values, function(err, result) {
             if (err) {
                 console.log(err);
@@ -229,6 +296,6 @@ app.get('/headmaster', function(req, res) {
     // } else {
     //     res.redirect('login');
     // }
-})
+});
 
 app.listen(port, (req, res) => { console.log('Server on port ' + port); });
