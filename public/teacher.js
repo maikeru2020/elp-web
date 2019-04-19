@@ -1,5 +1,5 @@
 function getContent(number) {
-    $.get("getLessonPlan", {week: number}, function(result) {
+    $.get("getPlan", {week: number}, function(result) {
         var week = result.week;
         var dueDate = formatDate(result.due_date);
         var weekEnding = formatDate(result.week_ending);
@@ -11,29 +11,30 @@ function getContent(number) {
         var materials = result.materials;
         var corePoints = result.core_points;
         var evaluation = result.evaluation;
+        var planId = result.id;
 
         var content = "<h1>Week " + week + "</h1>" +
                       "Due Date:<br>" +
-                      "<input type='date' value='" + dueDate + "'><br>" +
+                      "<input type='date' id='dueDate' value='" + dueDate + "'><br>" +
                       "Week Ending:<br>" +
-                      "<input type='date' value='" + weekEnding + "'><br>" +
+                      "<input type='date' id='weekEnding' value='" + weekEnding + "'><br>" +
                       "Reference:<br>" +
-                      "<textarea>" + reference + "</textarea><br>" +
+                      "<textarea id='reference'>" + reference + "</textarea><br>" +
                       "Day / Duration:<br>" +
-                      "<textarea>" + dayDuration + "</textarea><br>" +
+                      "<textarea id='dayDuration'>" + dayDuration + "</textarea><br>" +
                       "Topic:<br>" +
-                      "<textarea>" + topic + "</textarea><br>" +
+                      "<textarea id='topic'>" + topic + "</textarea><br>" +
                       "Objectives / R.P.K.:<br>" +
-                      "<textarea>" + objectives + "</textarea><br>" +
+                      "<textarea id='objectives'>" + objectives + "</textarea><br>" +
                       "Teacher-Learner Activities:<br>" +
-                      "<textarea>" + activities + "</textarea><br>" +
+                      "<textarea id='activities'>" + activities + "</textarea><br>" +
                       "Teaching Learning Materials:<br>" +
-                      "<textarea>" + materials + "</textarea><br>" +
+                      "<textarea id='materials'>" + materials + "</textarea><br>" +
                       "Core Points:<br>" +
-                      "<textarea>" + corePoints + "</textarea><br>" +
+                      "<textarea id='corePoints'>" + corePoints + "</textarea><br>" +
                       "Evaluation and Remarks:<br>" +
-                      "<textarea>" + evaluation + "</textarea><br>" +
-                      "<button>Save</button>";
+                      "<textarea id='evaluation'>" + evaluation + "</textarea><br>" +
+                      "<button onclick='savePlan("+ planId + ");'>Save</button>";
 
         $('.content').html(content);
     });
@@ -41,4 +42,45 @@ function getContent(number) {
 
 function formatDate(date) {
     return date.split('T')[0];
+}
+
+function savePlan(planId) {
+    var weekEnding = $('#weekEnding').val();
+    var reference = $('#reference').val();
+    var dayDuration = $('#dayDuration').val();
+    var topic =$('#topic').val();
+    var objectives = $('#objectives').val();
+    var activities = $('#activities').val();
+    var materials = $('#materials').val();
+    var corePoints = $('#corePoints').val();
+    var evaluation = $('#evaluation').val();
+
+    var params = {
+        planId: planId,
+        weekEnding: weekEnding,
+        reference: reference,
+        dayDuration: dayDuration,
+        topic: topic,
+        objectives: objectives,
+        activities: activities,
+        materials: materials,
+        corePoints: corePoints,
+        evaluation: evaluation
+    }
+
+    $.post('updatePlan', params, function(result) {
+        if (result.success) {
+            alert('Lesson Notes Saved');
+        }
+    });
+}
+
+function getClassroom() {
+    var classroomId = $('#classroomId').val();
+    $.get('getClassroom', {classroomId: classroomId}, function(result) {
+        var classroom = result.classroom;
+        var heading = '<h1>' + classroom.classroom_name + '</h1>';
+        $('#heading').html(heading);
+        $('.content').html('');
+    });
 }

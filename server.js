@@ -24,7 +24,7 @@ app.get('/', function(req, res) {
     res.redirect('login');
 });
 
-app.get('/getLessonPlan', function(req, res) {
+app.get('/getPlan', function(req, res) {
     var week = req.query.week;
     var classroomId = 1 // req.session.classroomId;
     var values = [classroomId, week];
@@ -66,10 +66,6 @@ app.post('/insertPlan', function(req, res) {
     });
 });
 
-app.get('/parents', function(req, res) {
-
-});
-
 app.post('/signIn', function(req, res) {
     var username = req.body.username;
     var password = req.body.password;
@@ -86,10 +82,10 @@ app.post('/signIn', function(req, res) {
                     if (err) {
                         console.log(err);
                     } else if (match) {
-                        var accountType = result.rows[0].account_type;
-                        var schoolId = result.rows[0].school_id;
-                        req.session.schoolId = schoolId;
-                        req.session.accountType = accountType;
+                        var user = result.rows[0];
+                        req.session.schoolId = user.school_id;
+                        req.session.accountType = user.account_type;
+                        req.session.userId = user.id;
 
                         // redirect to route based on account type
                         res.send({redirect: accountType});
@@ -104,20 +100,6 @@ app.post('/signIn', function(req, res) {
     });
     
 });
-
-app.get('/getUnapprovedPlans', function(req, res) {
-    var schoolId = req.session.schoolId;
-    var values = [schoolId];
-    var sql = 'SELECT * FROM lesson_plans WHERE school_id=$1 AND is_approved=false';
-    pool.query(sql, values, function(err, result) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.send(result.rows);
-        }
-    });
-
-})
 
 app.get('/getStudent', function(req, res) {
     var testMarks = {classTest1: 29, groupExercise: 10, classTest2: 30, projectHomework: 19, exam: 95}
@@ -155,39 +137,86 @@ app.post('/createAccount', function(req, res) {
     
 });
 
+app.post('/updatePlan', function(req, res) {
+    var planId = req.body.planId;
+    var weekEnding = req.body.weekEnding;
+    var reference = req.body.reference;
+    var dayDuration = req.body.dayDuration;
+    var topic = req.body.topic;
+    var objectives = req.body.objectives;
+    var activities = req.body.activities;
+    var materials = req.body.materials;
+    var corePoints = req.body.corePoints;
+    var evaluation = req.body.evaluation;
+
+    var values = [weekEnding, reference, dayDuration, topic, objectives, activities, materials, corePoints, evaluation, planId];
+    var sql = 'UPDATE lesson_plans SET week_ending=$1, reference=$2, day_duration=$3, topic=$4, objectives=$5, activities=$6, materials=$7, core_points=$8, evaluation=$9, is_approved=false WHERE id=$10';
+    pool.query(sql, values, function(err) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({success: true});
+        }
+    });
+});
+
+app.get('/getClassroom', function(req, res) {
+    var classroomId = req.query.classroomId;
+    req.session.classroomId = classroomId;
+    var values = [classroomId];
+    var sql = 'SELECT * FROM classrooms WHERE id=$1';
+    pool.query(sql, values, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({classroom: result.rows[0]});
+        }
+    });
+}); 
+
 app.get('/login', function(req, res) {
     res.render('login');
 });
 
 app.get('/teacher', function(req, res) {
-    if (req.session.accountType == 'teacher') {
-        res.render('teacher');
-    } else {
-        res.redirect('login');
-    }
+    // if (req.session.accountType == 'teacher') {
+        var userId = 1 // req.session.userId;
+        values = [userId];
+        sql = 'SELECT * FROM classrooms WHERE teacher_id=$1';
+        pool.query(sql, values, function(err, result) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render('teacher', {classrooms: result.rows});
+            }
+        });
+
+    // } else {
+    //     res.redirect('login');
+    // }
 
 });
 
 app.get('/parent', function(req, res) {
-    if (req.session.accountType == 'parent') {
+    res.render('parent');
+    // if (req.session.accountType == 'parent') {
         res.render('parent');
-    } else {
-        res.redirect('login');
-    }
+    // } else {
+    //     res.redirect('login');
+    // }
 });
 
 app.get('/admin', function(req, res) {
-    res.render('admin');
     // if (req.session.accountType == 'admin') {
-    //     res.render('admin');
+        res.render('admin');
     // } else {
     //     res.redirect('login');
     // }
 });
 
 app.get('/headmaster', function(req, res) {
-    if (req.session.accountType == 'headmaster') {
-        var schoolId = req.session.schoolId;
+    // if (req.session.accountType == 'headmaster') {
+        var schoolId = 1 // req.session.schoolId;
         var values = [schoolId];
         var sql = 'SELECT lp.id, lp.week, s.subject_name FROM lesson_plans lp JOIN subjects s ON s.id=lp.subject_id WHERE school_id=$1 AND is_approved=false';
         pool.query(sql, values, function(err, result) {
@@ -197,9 +226,9 @@ app.get('/headmaster', function(req, res) {
                 res.render('headmaster', {lessonPlans: result.rows});
             }
         });
-    } else {
-        res.redirect('login');
-    }
+    // } else {
+    //     res.redirect('login');
+    // }
 })
 
 app.listen(port, (req, res) => { console.log('Server on port ' + port); });

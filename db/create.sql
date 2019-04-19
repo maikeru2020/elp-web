@@ -28,11 +28,17 @@ CREATE TABLE terms (
     term_number VARCHAR(255)
 );
 
+CREATE TABLE subjects (
+    id SERIAL PRIMARY KEY,
+    subject_name VARCHAR(255)
+);
+
 CREATE TABLE classrooms (
     id SERIAL PRIMARY KEY,
     classroom_name VARCHAR(255),
     term_id INT REFERENCES terms,
-    school_id INT REFERENCES schools
+    subject_id INT REFERENCES subjects,
+    teacher_id INT REFERENCES users
 );
 
 CREATE TABLE students_classrooms (
@@ -43,11 +49,6 @@ CREATE TABLE students_classrooms (
 CREATE TABLE teachers_classrooms (
     teacher_id INT REFERENCES users,
     classroom_id INT REFERENCES classrooms 
-);
-
-CREATE TABLE subjects (
-    id SERIAL PRIMARY KEY,
-    subject_name VARCHAR(255)
 );
 
 CREATE TABLE lesson_plans (

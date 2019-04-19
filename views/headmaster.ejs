@@ -9,8 +9,7 @@
 <body>
     <div>
         <% for (let i = 0; i < lessonPlans.length; i++) {
-            var plan = lessonPlans[i];
-        %>
+            var plan = lessonPlans[i]; %>
             <h4 onclick="getContent(<%=plan.id %>)"><%=plan.subject_name %> Week <%=plan.week %></h4>
         <% } %>
     </div>

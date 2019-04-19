@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="heading"></div>
+    <div>
+        <select id="classroomId">
+            <% for (let i = 0; i < classrooms.length; i++) { %>
+                <option value='<%=classrooms[i].id %>'><%=classrooms[i].classroom_name %></option>
+            <% } %>
+        </select>
+        <button onclick="getClassroom();">Get Classroom</button>
+    </div>
     <!-- Weeks numbers -->
     <div class="leftNav">
         <% for (let i = 1; i <= 14; i++) {%>
